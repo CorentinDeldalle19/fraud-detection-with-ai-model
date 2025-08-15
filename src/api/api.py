@@ -5,15 +5,11 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 import os
+import uvicorn
 
 model = joblib.load('../models/lightgbm_model.pkl')
 with open('../models/best_threshold.txt', 'r') as f:
     best_threshold = float(f.read())
-
-port = int(os.environ.get("PORT", 8000))
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
 
 X_test = pd.read_csv("../../data/X_test.csv")
 y_test = pd.read_csv("../../data/y_test.csv")
@@ -23,7 +19,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-#Data model
 class TransactionFeatures(BaseModel):
     features: conlist(float, min_length=30, max_length=30)
 
@@ -36,14 +31,12 @@ class PredictionResult(BaseModel):
 
 @app.get("/")
 def greet():
-    return {"message": "bonjour"}
+    return {"message": "Bonjour, API Fraud Detection active"}
 
 @app.post("/predict", response_model=PredictionResult, status_code=status.HTTP_200_OK)
 def predict(transaction: TransactionFeatures):
     try:
-        # On convertit les features en np.array
         features = np.array(transaction.features).reshape(1, -1)
-
         df = pd.DataFrame(features, columns=[
             "Time", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10",
             "V11", "V12", "V13", "V14", "V15", "V16", "V17", "V18", "V19", "V20",
@@ -58,11 +51,7 @@ def predict(transaction: TransactionFeatures):
 
         prediction = model.predict(df)
         proba = model.predict_proba(df)
-
-        # On détermine une fraude par rapport au seuil optimal
         is_fraud = proba[0][1] > best_threshold - 1e-6
-
-        print(proba[0][1], best_threshold)
 
         return PredictionResult(
             prediction=int(prediction[0]),
@@ -76,7 +65,7 @@ def predict(transaction: TransactionFeatures):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Server error"
+            detail=f"Server error: {e}"
         )
 
 @app.get("/metrics")
@@ -100,3 +89,7 @@ def get_metrics():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Server error"
         )
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
