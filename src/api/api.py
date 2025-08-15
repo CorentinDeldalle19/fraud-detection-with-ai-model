@@ -4,10 +4,16 @@ import joblib
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+import os
 
 model = joblib.load('../models/lightgbm_model.pkl')
 with open('../models/best_threshold.txt', 'r') as f:
     best_threshold = float(f.read())
+
+port = int(os.environ.get("PORT", 8000))
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
 
 X_test = pd.read_csv("../../data/X_test.csv")
 y_test = pd.read_csv("../../data/y_test.csv")
