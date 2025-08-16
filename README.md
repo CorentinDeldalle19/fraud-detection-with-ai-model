@@ -1,6 +1,6 @@
 # 🚀 Credit Card Fraud Detection
 
-[Test the project here !](https://fraud-detection-with-ai-frontend.streamlit.app/)
+[Test the project online here !](https://fraud-detection-with-ai-frontend.streamlit.app/)
 
 Detecting fraudulent credit card transactions using machine learning and deep learning.  
 This project leverages the famous [Credit Card Fraud Detection dataset](https://www.kaggle.com/mlg-ulb/creditcardfraud) from Kaggle to design, train, and evaluate models that can accurately spot fraud in highly imbalanced data.
