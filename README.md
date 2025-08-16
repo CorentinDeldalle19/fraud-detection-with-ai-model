@@ -4,22 +4,6 @@
 
 Detecting fraudulent credit card transactions using **Machine Learning** and **Deep Learning**.  
 This project leverages the famous [Credit Card Fraud Detection dataset](https://www.kaggle.com/mlg-ulb/creditcardfraud) from Kaggle to design, train, and evaluate models that can accurately spot fraud in highly **imbalanced data**.
-
----
-
-## 📂 Project Structure
-├── data/
-│ ├── creditcard.csv
-│ └── ...
-├── notebooks/
-│ ├── 01_exploration.ipynb
-│ ├── 02_preprocessing.ipynb
-│ ├── 03_modeling.ipynb
-│ ├── 04_hyperparameter_optimization.ipynb
-│ └── 05_evaluation_and_visualization.ipynb
-└── README.md
-
-
 ---
 
 ## 🎯 Goals
